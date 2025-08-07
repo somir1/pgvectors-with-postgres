@@ -24,6 +24,9 @@ text = "PostgreSQL + pgvector is great for AI-powered search!"
 # Simulate a 1536-dimensional vector with random floats (same size as text-embedding-3-small)
 embedding = np.random.rand(1536).tolist()
 
+# Convert to pgvector-compatible string
+embedding_str = str(embedding).replace('[', '{').replace(']', '}')
+
 # Insert into DB
 conn = psycopg2.connect(
     dbname="vector_db",
@@ -37,7 +40,7 @@ cur = conn.cursor()
 
 cur.execute(
     "INSERT INTO documents (content, embedding) VALUES (%s, %s)",
-    (text, embedding)
+    (text, embedding_str)
 )
 
 conn.commit()
